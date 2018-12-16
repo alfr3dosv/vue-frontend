@@ -15,14 +15,13 @@ export default {
     authenticate: function (provider) {
       console.log('---- Intentando autenticar ----');
       this.$auth.authenticate('google', {provider: "google-oauth2"}).then( (response) => {
-        console.log('---- Funciono ----');
         console.log(response);
-        this.$apolloHelpers.onLogin(response.data.token);
-        console.log(response.data.token);
-        this.$router.push('/');
-        // if (response.data.email === "") {
-        //   window.location = "/dashboard";
-        // }
+        if (response.data.token != undefined) {
+          console.log('---- Funciono ----');
+          this.$apolloHelpers.onLogin(response.data.token);
+          console.log(response.data.token);
+          this.$router.push('/');
+        }
       }).catch(function (error) {
         console.log(error);
         console.log(error.response);

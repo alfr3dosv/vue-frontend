@@ -20,8 +20,6 @@
         value="true">
         {{ alert.message }}
       </h2>
-      <facebook-button/>
-      <google-button/>
       <p>Email/teléfono/nombre de usuario</p>
       <input
         v-model="credentials.username"
@@ -34,20 +32,26 @@
         name="password">
       <Button submit="submit">Entrar</Button>
     </form>
-
+    <facebook-button/>
+    <button
+      id="#google"
+      @click="authenticate('google')" >
+      google
+    </button>
   </div>
 </template>
 
 <script>
+  import authMixin from '../mixins/authMixin'
   import FacebookButton from '@/components/FacebookButton'
   import GoogleButton from '@/components/GoogleButton'
 
   export default {
-    // middleware: 'isAuthenticated',
     components: {
       FacebookButton,
       GoogleButton
     },
+    mixins: [authMixin, ],
     data() {
       return {
         credentials: {
@@ -65,14 +69,17 @@
       }
     },
     methods: {
+      hola() {
+        console.log('hola');
+      },
       submit() {
-        fetch('http://localhost:8000/api/token', {
+        fetch('http://127.0.0.1:8000/api/token', {
           method: 'POST',
           body: JSON.stringify(this.credentials),
           headers: {"Content-Type": "application/json"}
         }).then((resp) => resp.json())
           .then((data) => {
-            if (data.token !== undefined) {
+            if (data != null && data.token != null) {
               this.$apolloHelpers.onLogin(data.token);
               console.log(data.token);
               this.$router.push('/');

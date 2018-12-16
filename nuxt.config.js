@@ -9,13 +9,13 @@ module.exports = {
   head: {
     title: 'Cetacea',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Crea proyectos alrededor del mundo' }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: 'Crea proyectos alrededor del mundo'}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.13/css/all.css' }
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
+      {rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.13/css/all.css'}
     ]
   },
   /*
@@ -34,14 +34,18 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    { src: '~/plugins/design-system', ssr: true },
+    {src: '~/plugins/axios', ssr: false},
+    {src: '~/plugins/auth', ssr: false},
+    '@/mixins/authMixin',
+    {src: '~/plugins/design-system', ssr: true},
     '@/mixins/mixins',
     '@/plugins/login-modal',
-    { src: '~/plugins/localStorage', ssr: false },
-    { src: '~/plugins/segment', ssr: false },
-    { src: '~/plugins/optimizely', ssr: true },
-    { src: '~/plugins/flickity', ssr: false },
-    { src: '~/plugins/installationPromptPWA', ssr: false },
+    {src: '~/plugins/localStorage', ssr: false},
+    {src: '~/plugins/segment', ssr: false},
+    {src: '~/plugins/optimizely', ssr: true},
+    {src: '~/plugins/flickity', ssr: false},
+    {src: '~/plugins/installationPromptPWA', ssr: false},
+
   ],
   /*
   ** Nuxt.js modules
@@ -77,7 +81,7 @@ module.exports = {
           }
         `,
       })
-      .then(res => res.data.map(project => '/projects/' + project.title ))
+        .then(res => res.data.map(project => '/projects/' + project.title))
     }
   },
   /*
@@ -96,7 +100,7 @@ module.exports = {
   **  Apollo module
   */
   apollo: {
-    authenticationType: 'JWT',
+    authenticationType: 'Token',
     clientConfigs: {
       default: {
         httpEndpoint: process.env.DEV_GRAPH
@@ -128,7 +132,7 @@ module.exports = {
     */
     postcss: {
       plugins: {
-          // Disable `postcss-url`
+        // Disable `postcss-url`
         'postcss-url': false,
         // Add some plugins
         'postcss-custom-media': {},
