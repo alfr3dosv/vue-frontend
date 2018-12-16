@@ -24,7 +24,7 @@
       <google-button/>
       <p>Email/teléfono/nombre de usuario</p>
       <input
-        v-model="credentials.id" 
+        v-model="credentials.username"
         type="text"
         name="email">
       <p>Contraseña</p>
@@ -39,83 +39,48 @@
 </template>
 
 <script>
-import FacebookButton from '@/components/FacebookButton'
-import GoogleButton from '@/components/GoogleButton'
+  import FacebookButton from '@/components/FacebookButton'
+  import GoogleButton from '@/components/GoogleButton'
 
-export default {
-  // middleware: 'isAuthenticated',
-  components: {
-    FacebookButton,
-    GoogleButton
-  },
-  data () {
-    return {
-      credentials: {
-        id: null,
-        password: null,
-      },
-      alert: null,
-      loading: false
-    }
-  },
-  computed: {
-    isAuthenticated() {
-      // return !!this.$apolloHelpers.getToken()
-      return this.$store.getters['auth/isAuthenticated']
-    }
-  },
-  methods: {
-    async submit() {
-      const credentials = this.credentials
-      this.alert = null
-      this.loading = true
-
-      this.$store.dispatch('auth/login', 'ivan', '60a7e5c4')
-      .then(result => {
-        this.alert = {type: 'success', message: result.data.message}
-        this.loading = false
-        // this.$router.push('/')
-      })
-      .catch(error => {
-        this.loading = false
-        if (error.response && error.response.data) {
-          this.alert = {
-            type: 'error',
-            message: error.response.data.message || error.response.status
-          }
-        }
-      })
-
-      // try{
-      //   const res = await this.$apollo.mutate({
-      //     mutation: gql`
-      //       mutation tokenAuth($username: String!, $password: String!) {
-      //           tokenAuth(username: $username, password: $password) {
-      //               token
-      //           }
-      //       }
-      //   `,
-      //   variables: credentials
-      //   }).then(({data}) => data && data.tokenAuth)
-      //   await this.$apolloHelpers.onLogin(res.token)
-      //   this.isAuthenticated = true
-      //   /*
-      //   ** Identify user in Segment
-      //   */
-      //   analytics.identify('f4ca1248', {
-      //     name: 'El ivans',
-      //     email: 'elivans@yahoo.com.mx.it.ru.jp.io'
-      //   })
-      //   this.$router.replace('/')
-      // }
-      // catch (e) {
-      //   console.error(e)
-      // }
-
-
+  export default {
+    // middleware: 'isAuthenticated',
+    components: {
+      FacebookButton,
+      GoogleButton
+    },
+    data() {
+      return {
+        credentials: {
+          username: null,
+          password: null,
+        },
+        alert: null,
+        loading: false
+      }
+    },
+    computed: {
+      isAuthenticated() {
+        // return !!this.$apolloHelpers.getToken()
+        return this.$store.getters['auth/isAuthenticated']
+      }
+    },
+    methods: {
+      submit() {
+        fetch('http://localhost:8000/api/token', {
+          method: 'POST',
+          body: JSON.stringify(this.credentials),
+          headers: {"Content-Type": "application/json"}
+        }).then((resp) => resp.json())
+          .then((data) => {
+            if (data.token !== undefined) {
+              this.$apolloHelpers.onLogin(data.token);
+              console.log(data.token);
+              this.$router.push('/');
+            }
+          });
+      }
     }
   }
-}
 </script>
 
 <style scoped>
